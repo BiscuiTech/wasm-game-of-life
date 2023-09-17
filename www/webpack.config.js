@@ -6,6 +6,9 @@ module.exports = {
   experiments: {
     asyncWebAssembly: true
   },
+  optimization: {
+    // runtimeChunk: 'single'
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bootstrap.js",

@@ -7,9 +7,9 @@
     "create-wasm-app": ".bin/create-wasm-app.js"
   },
   "scripts": {
-    "build:wasm": "(cd ../;cargo build)",
+    "build:wasm": "(cd ../;cargo build;wasm-pack build)",
     "build": "webpack --config webpack.config.js",
-    "start": "webpack-dev-server"
+    "start": "webpack server --open"
   },
   "repository": {
     "type": "git",
