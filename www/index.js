@@ -1,14 +1,14 @@
-import {Cell, Universe, memory} from "wasm-game-of-life";
-// import {memory} from 'wasm-game-of-life/wasm_game_of_life_bg';
+import {Cell, Universe} from "wasm-game-of-life";
+import { memory } from "wasm-game-of-life/wasm_game_of_life_bg.wasm";
 
-const CELL_SIZE = 5; // px
+
+const CELL_SIZE = 2; // px
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
-const universe = Universe.new();
+const universe = Universe.new(224, 224);
 const width = universe.width();
 const height = universe.height();
-
 
 const canvas = document.getElementById("game-of-life-canvas");
 canvas.height = (CELL_SIZE + 1) * height + 1;
@@ -50,9 +50,14 @@ function drawGrid() {
   ctx.stroke();
 };
 
+function getIndex(row, column) {
+  return row * width + column;
+}
+
 function drawCells() {
   const cellsPtr = universe.cells();
-  const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
+
+  const cells = new Uint8Array(memory.buffer, cellsPtr, width * height / 8);
 
   ctx.beginPath();
 
@@ -60,9 +65,9 @@ function drawCells() {
     for (let col = 0; col < width; col++) {
       const idx = getIndex(row, col);
 
-      ctx.fillStyle = cells[idx] === Cell.Dead
-        ? DEAD_COLOR
-        : ALIVE_COLOR;
+      ctx.fillStyle = bitIsSet(idx, cells)
+        ? ALIVE_COLOR
+        : DEAD_COLOR;
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
@@ -74,4 +79,10 @@ function drawCells() {
   }
 
   ctx.stroke();
-}
+};
+
+function bitIsSet(n, arr) {
+  const byte = Math.floor(n / 8);
+  const mask = 1 << (n % 8);
+  return (arr[byte] & mask) === mask;
+};
