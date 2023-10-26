@@ -1,11 +1,34 @@
-import {Cell, Universe} from "wasm-game-of-life";
+import { Universe} from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg.wasm";
 
+const Theme = {
+  Dark: {
+    Grid: "#000",
+    Dead: "#000000",
+    Alive: "#FFF",
+  },
+  Light: {
+    Grid: "#CCCCCC",
+    Dead: "#FFFFFF",
+    Alive: "#000000"
+  }
+}
 
 const CELL_SIZE = 2; // px
-const GRID_COLOR = "#CCCCCC";
-const DEAD_COLOR = "#FFFFFF";
-const ALIVE_COLOR = "#000000";
+let theme = "Dark"
+
+function getGridColor() {
+  return Theme[theme].Grid
+}
+
+function getDeadColor() {
+  return Theme[theme].Dead
+}
+
+function getAliveColor() {
+  return Theme[theme].Alive
+}
+
 const universe = Universe.new(224, 224);
 const width = universe.width();
 const height = universe.height();
@@ -33,7 +56,7 @@ console.log('Welcome to life');
 
 function drawGrid() {
   ctx.beginPath();
-  ctx.strokeStyle = GRID_COLOR;
+  ctx.strokeStyle = getGridColor();
 
   // Vertical lines.
   for (let i = 0; i <= width; i++) {
@@ -66,8 +89,8 @@ function drawCells() {
       const idx = getIndex(row, col);
 
       ctx.fillStyle = bitIsSet(idx, cells)
-        ? ALIVE_COLOR
-        : DEAD_COLOR;
+        ? getAliveColor()
+        : getDeadColor();
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
